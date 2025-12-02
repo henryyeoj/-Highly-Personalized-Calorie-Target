@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mama's Kitchen Filipino Bistro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind Configuration (Kept here to ensure styles load immediately)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Custom Filipino Restaurant Colors: Maroon/Gold
+                        filipinoMaroon: '#800000', // Rich Maroon/Deep Red
+                        filipinoGold: '#DAA520', // Goldenrod (Better contrast than bright gold)
+                        darkbg: '#1f2937', // Tailwind gray-800
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for Filipino Bistro Aesthetic */
+        .text-primary { color: #800000; } /* Maroon */
+        .bg-primary { background-color: #800000; } /* Maroon */
+        .text-secondary { color: #DAA520; } /* Goldenrod */
+       
+        body {
+            background-color: #f8f8f8; /* Off-white background */
+        }
+       
+        /* Main kiosk card with thick maroon border */
+        .kiosk-card {
+            border: 4px solid #800000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            background-color: #fcfcfc;
+        }
+       
+        /* Clickable Menu Item Styling (Applied to all grid items now) */
+        .menu-item-card {
+            transition: all 0.2s ease;
+            border-left: 5px solid transparent;
+        }
+        .menu-item-card:hover {
+            box-shadow: 0 4px 12px rgba(128, 0, 0, 0.25);
+            transform: translateY(-2px);
+            cursor: pointer;
+            border-left: 5px solid #FFD700; /* Original Gold highlight on hover */
+        }
+       
+        /* Customization Modal Option Styling */
+        .custom-option-label {
+            transition: background-color 0.1s;
+            border: 1px solid #e5e7eb;
+        }
+        /* UPDATED: Modal option background for selected item */
+        .custom-option-label:has(input:checked) {
+            background-color: #fff4d9; /* Lighter shade of Goldenrod/Gold background */
+            border-color: #DAA520;
+            box-shadow: 0 0 5px rgba(218, 165, 32, 0.5);
+        }
+        .modal-body-wrapper {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+       
+        /* FIX FOR TAB LAYOUT: Guarantee single-line layout by adjusting padding and using flex-nowrap on larger screens */
+        .category-tabs {
+            /* Prevent wrapping on medium screens and larger */
+            flex-wrap: wrap;
+        }
+
+        .category-tabs > button {
+            /* Adjusted padding and font size for better fit */
+            padding-left: 0.75rem; /* px-3 */
+            padding-right: 0.75rem; /* px-3 */
+            font-size: 0.875rem; /* text-sm */
+            flex-shrink: 0; /* Ensure buttons don't shrink */
+        }
+       
+        /* Specific Fix for tablet/desktop alignment */
+        @media (min-width: 768px) {
+            .category-tabs {
+                flex-wrap: nowrap; /* Force one line on desktop */
+                justify-content: space-between; /* Spread buttons evenly */
+            }
+            .category-tabs > button {
+                margin-right: 0.5rem;
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex items-start justify-center p-4 sm:p-8">
+
+    <div id="app" class="w-full max-w-5xl bg-white rounded-xl p-4 sm:p-8 kiosk-card">
+        <h1 class="text-4xl font-extrabold text-primary mb-6 text-center border-b-4 border-secondary pb-2">
+            🍲 Mama's Kitchen: Authentic Filipino Eats
+        </h1>
+
+        <div class="grid grid-cols-1 gap-8">
+
+            <div>
+                <div class="category-tabs flex flex-wrap mb-6 border-b border-gray-200 pb-3">
+                    </div>
+
+                <h2 id="categoryTitle" class="text-2xl font-semibold mb-4 text-darkbg"></h2>
+               
+                <div id="menu" class="min-h-[500px]">
+                    </div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg shadow-inner">
+                <h2 class="text-2xl font-semibold mb-4 border-b pb-2 text-primary">🛒 Your Order Cart</h2>
+
+                <div id="cart" class="min-h-[100px] mb-4 space-y-2">
+                    <p class="text-gray-500 italic" id="empty-cart-message">Your cart is empty. Please select an item.</p>
+                    </div>
+               
+                <div class="mt-4 border-t pt-4">
+                    <h3 class="text-lg font-semibold text-darkbg mb-2">🏷️ Apply Discount</h3>
+                    <div class="flex flex-wrap gap-4" onchange="renderCart()">
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="discount" value="none" checked class="form-radio text-primary h-4 w-4">
+                            <span class="text-sm text-gray-700">None</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="discount" value="senior" class="form-radio text-primary h-4 w-4">
+                            <span class="text-sm text-gray-700">Senior Citizen (20%)</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="discount" value="pwd" class="form-radio text-primary h-4 w-4">
+                            <span class="text-sm text-gray-700">PWD (20%)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="totals" class="border-t pt-4 space-y-2 mt-4">
+                    <div class="flex justify-between text-gray-700">
+                        <span>Subtotal (VAT Incl.):</span>
+                        <span id="subtotalDisplay" class="font-medium">₱0.00</span>
+                    </div>
+                   
+                    <div id="discountRow" class="flex justify-between text-red-600 font-bold" style="display: none;">
+                        <span>Discount (20%):</span>
+                        <span id="discountDisplay">-₱0.00</span>
+                    </div>
+                   
+                    <div class="flex justify-between text-gray-700">
+                        <span>VAT (12%):</span>
+                        <span id="taxDisplay" class="font-medium">₱0.00</span>
+                    </div>
+                   
+                    <div class="flex justify-between text-3xl font-bold text-darkbg border-t mt-2 pt-2">
+                        <span>Total Payable:</span>
+                        <span id="totalDisplay" class="text-primary">₱0.00</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex gap-4">
+                    <button id="clearBtn" onclick="clearOrder()" class="w-full py-3 bg-red-800 text-white font-bold rounded-lg hover:bg-red-900 transition duration-150 shadow-md">
+                        Clear Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script src="script.js"></script>
+</body>
+</html>
