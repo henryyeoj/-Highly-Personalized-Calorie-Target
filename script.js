@@ -200,29 +200,29 @@ function generateTips(totalAdjustment) {
     
     // Check key factors and generate advice
     if (LIFESTYLE_ADJUSTMENTS.sleep[document.getElementById('sleepQuality').value] > 0) {
-        tips.push(`**Improve Sleep**: Poor sleep (less than 7 hours) makes you hungrier. Aim for 7-9 hours.`);
+        tips.push(`Improve Sleep: Poor sleep (less than 7 hours) makes you hungrier. Aim for 7-9 hours.`);
     }
     if (LIFESTYLE_ADJUSTMENTS.stress[document.getElementById('stressLevel').value] > 0) {
-        tips.push(`**Manage Stress**: High stress can cause your body to hold onto weight. Find time to relax.`);
+        tips.push(`Manage Stress: High stress can cause your body to hold onto weight. Find time to relax.`);
     }
     if (LIFESTYLE_ADJUSTMENTS.water[document.getElementById('waterIntake').value] > 0) {
-        tips.push(`**Drink Water**: Low water intake can cause your body to mistake thirst for hunger. Increase your fluid intake.`);
+        tips.push(`Drink Water: Low water intake can cause your body to mistake thirst for hunger. Increase your fluid intake.`);
     }
     if (LIFESTYLE_ADJUSTMENTS.foodQuality[document.getElementById('foodQuality').value] < 1.0) {
-        tips.push(`**Eat Better**: Prioritize protein and whole foods to boost the calories your body burns during digestion.`);
+        tips.push(`Eat Better: Prioritize protein and whole foods to boost the calories your body burns during digestion.`);
     }
     
     const medicalSelect = document.getElementById('medicalConditions');
     const hasMedicalAdjustments = Array.from(medicalSelect.options).some(option => option.selected && option.value !== 'none_apply');
 
     if (hasMedicalAdjustments) {
-        tips.push(`**Doctor Check**: Because of your **Medical Conditions**, weight change may be slower. Consult a doctor or dietitian.`);
+        tips.push(`Doctor Check: Because of your **Medical Conditions**, weight change may be slower. Consult a doctor or dietitian.`);
     }
 
     if (totalAdjustment === 0) {
-        tips.push("**Great Start!** Your lifestyle factors are currently supporting your goal. Keep it up!");
+        tips.push("Great Start! Your lifestyle factors are currently supporting your goal. Keep it up!");
     } else if (totalAdjustment > 0) {
-        tips.push(`**Monitor Closely**: Your lifestyle factors added ${totalAdjustment} kcal to your target. Focus on fixing sleep, stress, and water intake.`);
+        tips.push(`Monitor Closely: Your lifestyle factors added ${totalAdjustment} kcal to your target. Focus on fixing sleep, stress, and water intake.`);
     }
     
     return tips.map(tip => `<li>${tip}</li>`).join('');
